@@ -2,17 +2,23 @@
 
 namespace LazyFixturesBundle\Annotation;
 
-use Doctrine\ORM\Mapping\Annotation;
 use LazyFixturesBundle\Annotation\Interfaces\LazyFixtureAnnotation;
 
 /**
  * @Annotation
  * @Target("CLASS")
- * @author Guillermo Quinteros <gu.quinteros@gmail.com>
  */
-final class Entity implements Annotation, LazyFixtureAnnotation
+final class Entity extends AbstractAnnotation implements LazyFixtureAnnotation
 {
-    protected static $name = 'entity';
+    /**
+     * @var string
+     */
+    const NAME = 'Entity';
+
+    /**
+     * @var string
+     */
+    const TYPE = 'entity';
     
     /**
      * @var integer
@@ -23,14 +29,6 @@ final class Entity implements Annotation, LazyFixtureAnnotation
      * @var array
      */
     public $dependencies = [];
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return self::$name;
-    }
     
     /**
      * @return int

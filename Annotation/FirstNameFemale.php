@@ -8,15 +8,15 @@ use LazyFixturesBundle\Annotation\Interfaces\LazyFixtureAnnotation;
  * @Annotation
  * @Target("PROPERTY")
  */
-final class Relation extends AbstractAnnotation implements LazyFixtureAnnotation
+final class FirstNameFemale extends AbstractAnnotation implements LazyFixtureAnnotation
 {
     /**
      * @var string
      */
-    const NAME = 'Relation';
+    const NAME = 'FirstNameFemale';
 
     /**
      * @var string
      */
-    const TYPE = 'relation';
+    const TYPE = 'field';
 }

@@ -8,15 +8,20 @@ use LazyFixturesBundle\Annotation\Interfaces\LazyFixtureAnnotation;
  * @Annotation
  * @Target("PROPERTY")
  */
-final class Relation extends AbstractAnnotation implements LazyFixtureAnnotation
+final class Shuffle extends AbstractAnnotation implements LazyFixtureAnnotation
 {
     /**
      * @var string
      */
-    const NAME = 'Relation';
+    const NAME = 'Shuffle';
 
     /**
      * @var string
      */
-    const TYPE = 'relation';
+    const TYPE = 'field';
+
+    /**
+     * @var string
+     */
+    public $string;
 }

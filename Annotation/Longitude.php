@@ -8,15 +8,25 @@ use LazyFixturesBundle\Annotation\Interfaces\LazyFixtureAnnotation;
  * @Annotation
  * @Target("PROPERTY")
  */
-final class Relation extends AbstractAnnotation implements LazyFixtureAnnotation
+final class Longitude extends AbstractAnnotation implements LazyFixtureAnnotation
 {
     /**
      * @var string
      */
-    const NAME = 'Relation';
+    const NAME = 'Longitude';
 
     /**
      * @var string
      */
-    const TYPE = 'relation';
+    const TYPE = 'field';
+
+    /**
+     * @var int
+     */
+    public $min;
+
+    /**
+     * @var int
+     */
+    public $max;
 }

@@ -5,4 +5,4 @@ tests/temp/*.log
 /bin
 /composer.lock
 /composer.phar
-.idea
+.idea/*

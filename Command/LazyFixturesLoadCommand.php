@@ -7,11 +7,12 @@ use LazyFixturesBundle\Annotation\Field;
 use LazyFixturesBundle\Annotation\Entity;
 use LazyFixturesBundle\Annotation\Relation;
 use Doctrine\Common\Persistence\ObjectManager;
+use LazyFixturesBundle\Helper\AnnotationResolver;
 use Symfony\Component\Console\Command\Command;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Symfony\Component\Console\Input\InputInterface;
-use App\Exceptions\LazyFixturesAnnotationException;
+use LazyFixturesBundle\Exceptions\LazyFixturesAnnotationException;
 use Symfony\Component\Console\Output\OutputInterface;
 use LazyFixturesBundle\Annotation\Interfaces\LazyFixtureAnnotation;
 
@@ -36,12 +37,7 @@ class LazyFixturesLoadCommand extends Command
      * @var AnnotationReader
      */
     private $reader;
-
-    /**
-     * @var \Faker\Generator
-     */
-    private $faker;
-
+    
     /**
      * @var \Doctrine\Common\Persistence\Mapping\ClassMetadata[]
      */
@@ -65,7 +61,6 @@ class LazyFixturesLoadCommand extends Command
     public function __construct(ObjectManager $manager)
     {
         $this->manager = $manager;
-        $this->faker = Factory::create();
         $this->reader = new AnnotationReader();
         $this->metadata = $manager->getMetadataFactory()->getAllMetadata();
         parent::__construct();
@@ -84,7 +79,7 @@ class LazyFixturesLoadCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->validateAnnotationsOrThrowException();
+        //$this->validateAnnotationsOrThrowException();
         $this->purgateDatabase();
         
         foreach ($this->metadata as $classMetadata) {
@@ -121,14 +116,13 @@ class LazyFixturesLoadCommand extends Command
             foreach ($reflectionClass->getProperties() as $property) {
                 $annotation = $this->getLazyFixtureAnnotationOrNull($property);
                 if (!$annotation) {
-                    continue;
+                    continue; 
                 }
-                switch ($annotation->getName()) {
+                $annotationResolver = new AnnotationResolver($annotation);
+                switch ($annotation->getType()) {
                     case 'field':
                         $setterName = 'set'.ucwords($property->getName());
-                        /** @var Field $annotation */
-                        $fakerName = $annotation->getType();
-                        $entity->$setterName($this->faker->$fakerName);
+                        $entity->$setterName($annotationResolver->getValue());
                         break;
                     case 'relation':
                         $setterName = 'set'.ucwords($property->getName());
@@ -192,12 +186,10 @@ class LazyFixturesLoadCommand extends Command
      */
     private function getLazyFixtureAnnotationOrNull($property)
     {
-        $annotation = $this->reader
-            ->getPropertyAnnotation($property, Field::class);
-        if (!$annotation) {
-            $annotation = $this->reader
-                ->getPropertyAnnotation($property, Relation::class);
-        }
+        $annotation = $this->reader->getPropertyAnnotation(
+            $property,
+            LazyFixtureAnnotation::class
+        );
         return $annotation;
     }
 
@@ -264,6 +256,8 @@ class LazyFixturesLoadCommand extends Command
                             try {
                                 $this->faker->$fakerName;
                             } catch (\Exception $e) {
+                                $this->faker->$fakerName;
+                                die;
                                 throw LazyFixturesAnnotationException::invalidFieldType(
                                     $reflectionClass->getName(),
                                     $property->getName()

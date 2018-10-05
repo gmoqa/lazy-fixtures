@@ -7,16 +7,17 @@ use LazyFixturesBundle\Annotation\Interfaces\LazyFixtureAnnotation;
 /**
  * @Annotation
  * @Target("PROPERTY")
+ * @author Guillermo Quinteros <gu.quinteros@gmail.com>
  */
-final class Relation extends AbstractAnnotation implements LazyFixtureAnnotation
+final class RandomDigitNotNull extends AbstractAnnotation implements LazyFixtureAnnotation
 {
     /**
      * @var string
      */
-    const NAME = 'Relation';
+    const NAME = 'RandomDigitNotNull';
 
     /**
      * @var string
      */
-    const TYPE = 'relation';
+    const TYPE = 'field';
 }
